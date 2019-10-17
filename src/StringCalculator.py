@@ -11,6 +11,7 @@ Kata TDD String Calculator
 """
 
 import unittest
+import re
 
 
 class StringCalculator(object):
@@ -21,9 +22,10 @@ class StringCalculator(object):
         """
         The add function of the calculator
         """
+        delimiters = ',|\n'
         if numbers_string == '':
             return 0
-        numbers_list = [int(n) for n in numbers_string.split(',')]
+        numbers_list = [int(n) for n in re.split(delimiters, numbers_string)]
         return sum(numbers_list)
 
 
@@ -47,6 +49,8 @@ class TestStringCalculator(unittest.TestCase):
     def testSeveralNumbersString(self):
         self.assertEqual(self.calculator.add('1,2,3,4'), 10)
 
+    def testNewLineDelimiter(self):
+        self.assertEqual(self.calculator.add('1\n2,3'), 6)
 
 
 
