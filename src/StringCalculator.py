@@ -14,10 +14,21 @@ import unittest
 import re
 
 
+class NegativeNotAllowed(Exception):
+    pass
+
+
 class StringCalculator(object):
     """
     Class for implementing a calculator based on strings
     """
+    def _filter_negative(self, numbers_list):
+        negative_numbers = [n for n in numbers_list if n < 0]
+        if negative_numbers:
+            raise NegativeNotAllowed('Numbers %s '
+                                     'not allowed' % negative_numbers)
+        return negative_numbers
+
     def _add(self, numbers_string, delimiters_list):
         """
         The add function of the calculator
@@ -26,6 +37,7 @@ class StringCalculator(object):
         if numbers_string == '':
             return 0
         numbers_list = [int(n) for n in re.split(delimiters, numbers_string)]
+        self._filter_negative(numbers_list)
         return sum(numbers_list)
 
     def add(self, numbers_string):
@@ -63,6 +75,11 @@ class TestStringCalculator(unittest.TestCase):
 
     def testCustomDelimiters(self):
         self.assertEqual(self.calculator.add('//;\n1;2'), 3)
+
+    def testNegativeNumbers(self):
+        self.assertRaises(NegativeNotAllowed,
+                          self.calculator.add,
+                          '-1,2')
 
 if __name__ == "__main__":
     unittest.main()
