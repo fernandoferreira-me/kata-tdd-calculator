@@ -18,16 +18,25 @@ class StringCalculator(object):
     """
     Class for implementing a calculator based on strings
     """
-    def add(self, numbers_string):
+    def _add(self, numbers_string, delimiters_list):
         """
         The add function of the calculator
         """
-        delimiters = ',|\n'
+        delimiters = '|'.join(delimiters_list)
         if numbers_string == '':
             return 0
         numbers_list = [int(n) for n in re.split(delimiters, numbers_string)]
         return sum(numbers_list)
 
+    def add(self, numbers_string):
+        """
+        The add function of the calculator
+        """
+        delimiters = [',', '\n']
+        if numbers_string[0:2] == '//':
+            delimiters = [numbers_string[2]]
+            numbers_string = numbers_string[4:]
+        return self._add(numbers_string, delimiters)
 
 
 class TestStringCalculator(unittest.TestCase):
@@ -52,7 +61,8 @@ class TestStringCalculator(unittest.TestCase):
     def testNewLineDelimiter(self):
         self.assertEqual(self.calculator.add('1\n2,3'), 6)
 
-
+    def testCustomDelimiters(self):
+        self.assertEqual(self.calculator.add('//;\n1;2'), 3)
 
 if __name__ == "__main__":
     unittest.main()
