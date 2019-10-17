@@ -23,10 +23,6 @@ class StringCalculator(object):
         """
         if numbers_string == '':
             return 0
-        # Convert '1,2' => [1, 2]
-        # numbers_list = []
-        # for n in numbers_string.split(','):
-        #     numbers_list.append(int(n))
         numbers_list = [int(n) for n in numbers_string.split(',')]
         return sum(numbers_list)
 
@@ -47,6 +43,9 @@ class TestStringCalculator(unittest.TestCase):
 
     def testTwoNumbersString(self):
         self.assertEqual(self.calculator.add('1,2'), 3)
+
+    def testSeveralNumbersString(self):
+        self.assertEqual(self.calculator.add('1,2,3,4'), 10)
 
 
 
