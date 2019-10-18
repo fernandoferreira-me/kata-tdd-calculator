@@ -51,7 +51,20 @@ class StringCalculator(object):
         return self._add(numbers_string, delimiters)
 
 
-class TestStringCalculator(unittest.TestCase):
+class ExtendedTestCase(unittest.TestCase):
+    def AssertRaisesWithMessage(self, exception, msg, func, *args, **kwargs):
+        try:
+            func(*args, **kwargs)
+            self.fail()
+        except exception as exception_msg:
+            if str(exception_msg) != msg:
+                self.fail(exception_msg)
+            pass
+        except:
+            self.fail()
+
+
+class TestStringCalculator(ExtendedTestCase):
     """
     Tests for strings
     """
@@ -78,8 +91,26 @@ class TestStringCalculator(unittest.TestCase):
 
     def testNegativeNumbers(self):
         self.assertRaises(NegativeNotAllowed,
+                            self.calculator.add,
+                            '-1,2')
+
+    def testMultipleNegativeNumbers(self):
+        self.assertRaises(NegativeNotAllowed,
                           self.calculator.add,
-                          '-1,2')
+                          '-1,-2')
+
+    def testNegativeNumbersNotAllowedMessage(self):
+        self.AssertRaisesWithMessage(NegativeNotAllowed,
+                                     'Numbers [-1, -2] not allowed',
+                                     self.calculator.add,
+                                     '-1, -2')
+
+    def testNegativeNumberNotAllowedMessage(self):
+        self.AssertRaisesWithMessage(NegativeNotAllowed,
+                                     'Numbers [-1] not allowed',
+                                     self.calculator.add,
+                                     '-1')
+
 
 if __name__ == "__main__":
     unittest.main()
